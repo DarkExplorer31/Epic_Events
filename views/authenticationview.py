@@ -13,9 +13,24 @@ class AuthenticationView:
         password_entry.config(show=new_state)
         visibility_button["text"] = "Hide PW" if new_state == "" else "See PW"
 
-    def send_data(self, username, password):
-        print("Username:", username)
-        print("Password:", password)
+    def get_data(self, username, password):
+        data = (username, password)
+        return data
+
+    def display_error(self, error_message):
+        display_errors = Entry(
+            self.window,
+            textvariable=StringVar(value=error_message),
+            state="readonly",
+            font=("Franklin Gothic Medium", 25),
+            readonlybackground="#224466",
+            fg="red",
+            justify="center",
+        )
+        display_errors.place(x=50, y=300, width=800, height=50)
+
+    def set_controller(self, controller):
+        self.controller = controller
 
     def create_window(self):
         """Method to initialize all elements of authentication window"""
@@ -75,18 +90,15 @@ class AuthenticationView:
         confirm_button = Button(
             self.window,
             text="Confirm",
-            command=lambda: self.send_data(username_entry.get(), password_entry.get()),
+            command=lambda: self.controller.authenticate(
+                username_entry.get(), password_entry.get()
+            ),
         )
         confirm_button.grid(row=3, column=1, padx=10, pady=10, sticky="w")
 
-        # Add specifics elements: Errors
-        display_errors = Entry(self.window, state="disabled")
-        display_errors.grid(row=4, column=1, padx=10, pady=10, sticky="w")
-
     def run(self):
+        self.create_window()
         self.window.mainloop()
 
-
-auth_view = AuthenticationView()
-auth_view.create_window()
-auth_view.run()
+    def close(self):
+        self.window.destroy()
