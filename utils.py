@@ -14,26 +14,29 @@ class Utils:
     def display_red_message(self, message):
         print(f"{Fore.RED} {message} {Style.RESET_ALL}")
 
+    def display_green_message(self, message):
+        print(f"{Fore.GREEN} {message} {Style.RESET_ALL}")
+
     def create_menu(self, options):
         """Create a menu in while loop,
-        destinated to views, options need to be a dict
+        destinated to views, options need to be a dict.
         This function include -'q' option like other choice.
         You need to consider if 'q' option is selected out of
         this function to quit."""
         try:
             options = dict(options)
-        except TypeError:
+        except ValueError:
             raise ValueError(
                 f"{Fore.RED}"
                 + "La variable options doit être un dictionnaire."
                 + f"{Style.RESET_ALL}"
             )
-        choice = ""
         choice_option = ["q"]
-        while choice != "":
+        while True:
             for option_name, option_description in options.items():
-                print(f"{Fore.CYAN}-{option_name}: {option_description};" + "\n")
-                choice_option.append(option_name)
+                print(f"{Fore.CYAN}-{option_name}: {option_description};")
+                if option_name not in choice_option:
+                    choice_option.append(option_name)
             print("-q: Quitter le menu." + f"{Style.RESET_ALL}")
             choice = input("Entrez votre choix\n> ").lower()
             if choice == "":
@@ -64,7 +67,7 @@ class Utils:
         while choice != "q" or choice != "Q":
             try:
                 asking_sentence = str(asking_sentence)
-            except TypeError:
+            except ValueError:
                 self.display_red_message(
                     "La variable asking_sentence doit être une chaine de caractère"
                 )
@@ -77,7 +80,7 @@ class Utils:
             if not_in_constant_message:
                 try:
                     not_in_constant_message = str(not_in_constant_message)
-                except TypeError:
+                except ValueError:
                     self.display_red_message(
                         "La variablenot_in_constant_message doit"
                         + " être une chaine de caractère"
