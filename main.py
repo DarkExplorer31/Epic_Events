@@ -13,11 +13,11 @@ def main():
         authenticate_user = authentication_controller.authenticate()
         if not authenticate_user:
             return None
-        choice = authentication_controller.main_menu(user=authenticate_user)
+        choice = ""
         while choice != "q":
             choice = authentication_controller.main_menu(user=authenticate_user)
             if choice == "u":
-                user_controller = UserManager()
+                user_controller = UserManager(db_session, authenticate_user)
                 user_controller.run()
             elif choice == "c":
                 pass
@@ -25,6 +25,7 @@ def main():
                 pass
             elif choice == "cl":
                 pass
+        db_session.close()
 
 
 if __name__ == "__main__":

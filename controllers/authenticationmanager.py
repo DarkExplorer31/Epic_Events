@@ -1,14 +1,14 @@
 """Authentication controller"""
 
 from views.authenticationview import AuthenticationView
-from models.user import User
+from models.user_model import UserModel
 from utils import Utils
 
 
 class AuthenticationController:
     def __init__(self, session):
         self.view = AuthenticationView()
-        self.user = User(session)
+        self.user = UserModel(session)
         self.utils = Utils()
 
     def authenticate(self):
@@ -23,9 +23,9 @@ class AuthenticationController:
                     new_password = self.view.add_new_password(
                         user_authenticate.password
                     )
-                    user_authenticate.password = new_password
-                    user_authenticate.first_using_password = False
-                    update = self.user.update_user(user_authenticate)
+                    update = self.user.change_password(
+                        user_authenticate.id, new_password
+                    )
                     if update:
                         self.utils.display_green_message(
                             "Mot de passe changer.\nAccès autorisé"

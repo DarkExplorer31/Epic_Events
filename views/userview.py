@@ -2,28 +2,34 @@
 
 from utils import Utils
 
-ROLE = ["Sales", "Management", "Support"]
-EMAIL_TYPE = "@"
-
 
 class UserView:
+    ROLE = ["Sales", "Manager", "Support"]
+    EMAIL_TYPE = "@"
+
     def __init__(self):
         self.utils = Utils()
 
     def display_users(self, all_users):
         for user in all_users:
-            print(user)
+            print(f"-{user}")
         self.utils.display_green_message("La liste est terminer.\n")
 
     def add_new_user_view(self, username):
         """Manager view, ask role, complete_name, email and phone_number
         to create a new User in db. The password is generated and not asking."""
-        print(f"Bienvenue dans la création d'un nouveau collaborateur {username}")
+        print(
+            f"Bienvenue dans la création d'un nouveau collaborateur {username}" + "\n"
+        )
+        print("Les roles qui peuvent être: ")
+        for role in self.ROLE:
+            print(f"-{role}")
+        print("\n")
         while True:
             role = self.utils.information_menu(
                 asking_sentence="Veuillez remplir son nouveau rôle",
-                constant=ROLE,
-                not_in_constant_message="Le role doit être :Sales, Management ou Support",
+                constant=self.ROLE,
+                not_in_constant_message="Le role doit être: Sales, Management ou Support",
             )
             if not role:
                 return None
@@ -34,20 +40,16 @@ class UserView:
                 return None
             email = self.utils.information_menu(
                 asking_sentence="Veuillez remplir son email",
-                reverse_constant=EMAIL_TYPE,
+                reverse_constant=self.EMAIL_TYPE,
                 not_in_constant_message="L'email doit comporter un '@'",
             )
             if not email:
                 return None
             phone_number = self.utils.information_menu(
-                asking_sentence="Veuillez remplir son numéro de tel.", in_lower=False
+                asking_sentence="Veuillez remplir son numéro de tel."
             )
             if not phone_number:
                 return None
-            elif len(phone_number) != 10:
-                self.utils.display_red_message(
-                    "Le numéro de téléphone doit contenir dix caractères."
-                )
             print(
                 "La demande d'inscription à été prise en compte. Ce nouvelle"
                 + " utilisateur devra entré un nouveau mot de "
@@ -70,7 +72,8 @@ class UserView:
         """Manager view, ask role, complete_name and phone_number
         to update User in db."""
         print(
-            f"Vous voulez mettre à jour les information de {user.email}."
+            "\n"
+            + f"Vous voulez mettre à jour les information de {user.email}."
             + "\nVous ne pourrait changer que le role,"
             + " le nom complet ou le numéro de téléphone."
             + f"Actuellement, son role est: {user.role}"
@@ -78,10 +81,11 @@ class UserView:
             + f"le numéro de téléphone est: {user.phone_number}"
             + "\n"
             + f"et le nom complet: {user.complete_name}"
+            + "\n"
         )
         role = self.utils.information_menu(
             asking_sentence="Veuillez remplir son nouveau rôle",
-            constant=ROLE,
+            constant=self.ROLE,
             not_in_constant_message="Le role doit être :Sales, Management ou Support",
         )
         if not role:
@@ -98,7 +102,7 @@ class UserView:
             user.complete_name = complete_name
             self.utils.display_green_message("Le nom à été changer.")
         phone_number = self.utils.information_menu(
-            asking_sentence="Veuillez remplir son numéro de tel.", in_lower=False
+            asking_sentence="Veuillez remplir son numéro de tel."
         )
         if not phone_number:
             self.utils.display_red_message("Le numéro de téléphone n'a pas été changer")
@@ -123,7 +127,7 @@ class UserView:
         while confirmation != "q":
             confirmation = self.utils.information_menu(
                 asking_sentence="êtes-vous sûr de vouloir supprimer "
-                + f"l'utilisateur {user_to_delete.complete_name}"
+                + f"l'utilisateur '{user_to_delete.complete_name}' (y/n)"
             )
             if confirmation == "y":
                 return True

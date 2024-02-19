@@ -37,7 +37,7 @@ class Utils:
                 print(f"{Fore.CYAN}-{option_name}: {option_description};")
                 if option_name not in choice_option:
                     choice_option.append(option_name)
-            print("-q: Quitter le menu." + f"{Style.RESET_ALL}")
+            print("-q: Quitter ce menu." + f"{Style.RESET_ALL}")
             choice = input("Entrez votre choix\n> ").lower()
             if choice == "":
                 self.display_red_message("Votre choix ne peut pas être vide.")
@@ -52,7 +52,7 @@ class Utils:
         constant=None,
         reverse_constant=None,
         not_in_constant_message=None,
-        in_lower=True,
+        in_lower=False,
     ):
         """Create a menu in while loop,
         destinated to views.
@@ -82,7 +82,7 @@ class Utils:
                     not_in_constant_message = str(not_in_constant_message)
                 except ValueError:
                     self.display_red_message(
-                        "La variablenot_in_constant_message doit"
+                        "La variable not_in_constant_message doit"
                         + " être une chaine de caractère"
                     )
             if in_lower:
@@ -93,9 +93,11 @@ class Utils:
                 choice = input(f"{asking_sentence} ou 'q' pour quitter" + "\n> ")
             if not choice:
                 self.display_red_message("Ce champ ne peut pas être vide")
+            elif choice == "q" or choice == "Q":
+                return None
             elif constant:
                 if choice not in constant and not_in_constant_message:
-                    print(f"{not_in_constant_message}")
+                    self.display_red_message(f"{not_in_constant_message}")
                 elif choice not in constant and not not_in_constant_message:
                     self.display_red_message(
                         "La réponse donnée ne correspond pas aux attentes."
@@ -104,15 +106,15 @@ class Utils:
                     return choice
             elif reverse_constant:
                 if reverse_constant not in choice and not_in_constant_message:
-                    print(f"{Fore.RED} {not_in_constant_message} {Style.RESET_ALL}")
+                    self.display_red_message(
+                        f"{Fore.RED} {not_in_constant_message} {Style.RESET_ALL}"
+                    )
                 elif reverse_constant not in choice and not not_in_constant_message:
                     self.display_red_message(
                         "La réponse donnée ne correspond pas aux attentes."
                     )
                 else:
                     return choice
-            elif choice == "q" or choice == "Q":
-                return None
             else:
                 return choice
 
