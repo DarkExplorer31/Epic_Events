@@ -3,6 +3,7 @@
 from db import DataBase
 from controllers.authenticationmanager import AuthenticationController
 from controllers.usermanager import UserManager
+from models.user_model import UserModel
 
 
 def main():

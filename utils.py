@@ -9,7 +9,7 @@ class Utils:
     """Class created to not repeat some part of code like menu structure."""
 
     def __init__(self):
-        init()
+        init()  # TODO: je le mette en global
 
     def display_red_message(self, message):
         print(f"{Fore.RED} {message} {Style.RESET_ALL}")

@@ -1,5 +1,6 @@
 """DataBase manager"""
 
+import time
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
