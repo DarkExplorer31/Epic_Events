@@ -4,6 +4,8 @@ import enum
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Date, Enum, Boolean, ForeignKey, Float
 from sqlalchemy.orm import relationship
+from sqlalchemy import event
+
 from db import Base
 
 
@@ -47,6 +49,16 @@ class Client(Base):
     updating_date = Column(Date, default=datetime.now, nullable=False)
 
     contracts = relationship("Contract", back_populates="client")
+
+    def __str__(self):
+        representation = (
+            f"{self.company_name}: contact:{self.complete_name},"
+            + "\n"
+            + f" email du contact:{self.email},  téléphone: "
+            + "\n"
+            + f"{self.phone_number}, créer le: {self.creation_date}"
+        )
+        return representation
 
 
 class StatusEnum(enum.Enum):

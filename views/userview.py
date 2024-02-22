@@ -1,6 +1,6 @@
 """User view"""
 
-from utils import Utils
+from utils import Menu, display_green_message, display_red_message, generate_password
 
 
 class UserView:
@@ -8,12 +8,12 @@ class UserView:
     EMAIL_TYPE = "@"
 
     def __init__(self):
-        self.utils = Utils()
+        self.menu = Menu()
 
     def display_users(self, all_users):
         for user in all_users:
             print(f"-{user}")
-        self.utils.display_green_message("La liste est terminer.\n")
+        display_green_message("La liste est terminer.\n")
 
     def add_new_user_view(self, username):
         """Manager view, ask role, complete_name, email and phone_number
@@ -26,26 +26,26 @@ class UserView:
             print(f"-{role}")
         print("\n")
         while True:
-            role = self.utils.information_menu(
+            role = self.menu.information_menu(
                 asking_sentence="Veuillez remplir son nouveau rôle",
-                constant=self.ROLE,
-                not_in_constant_message="Le role doit être: Sales, Management ou Support",
+                possible_response=self.ROLE,
+                not_conform_message="Le role doit être: Sales, Management ou Support",
             )
             if not role:
                 return None
-            complete_name = self.utils.information_menu(
+            complete_name = self.menu.information_menu(
                 asking_sentence="Veuillez remplir son nom complet"
             )
             if not complete_name:
                 return None
-            email = self.utils.information_menu(
+            email = self.menu.information_menu(
                 asking_sentence="Veuillez remplir son email",
-                reverse_constant=self.EMAIL_TYPE,
-                not_in_constant_message="L'email doit comporter un '@'",
+                value_in_sentence=self.EMAIL_TYPE,
+                not_conform_message="L'email doit comporter un '@'",
             )
             if not email:
                 return None
-            phone_number = self.utils.information_menu(
+            phone_number = self.menu.information_menu(
                 asking_sentence="Veuillez remplir son numéro de tel."
             )
             if not phone_number:
@@ -55,7 +55,7 @@ class UserView:
                 + " utilisateur devra entré un nouveau mot de "
                 + "passe dès sa première connexion"
             )
-            password = self.utils.generate_password()
+            password = generate_password()
             return [role, complete_name, email, phone_number, password]
 
     def find_user(self):
@@ -83,32 +83,32 @@ class UserView:
             + f"et le nom complet: {user.complete_name}"
             + "\n"
         )
-        role = self.utils.information_menu(
+        role = self.menu.information_menu(
             asking_sentence="Veuillez remplir son nouveau rôle",
-            constant=self.ROLE,
-            not_in_constant_message="Le role doit être :Sales, Management ou Support",
+            possible_response=self.ROLE,
+            not_conform_message="Le role doit être :Sales, Management ou Support",
         )
         if not role:
-            self.utils.display_red_message("Le role n'a pas été changer")
+            display_red_message("Le role n'a pas été changer")
         else:
             user.role = role
-            self.utils.display_green_message("Le role à été changer.")
-        complete_name = self.utils.information_menu(
+            display_green_message("Le role à été changer.")
+        complete_name = self.menu.information_menu(
             asking_sentence="Veuillez remplir son nom complet"
         )
         if not complete_name:
-            self.utils.display_red_message("Le nom n'a pas été changer")
+            display_red_message("Le nom n'a pas été changer")
         else:
             user.complete_name = complete_name
-            self.utils.display_green_message("Le nom à été changer.")
-        phone_number = self.utils.information_menu(
+            display_green_message("Le nom à été changer.")
+        phone_number = self.menu.information_menu(
             asking_sentence="Veuillez remplir son numéro de tel."
         )
         if not phone_number:
-            self.utils.display_red_message("Le numéro de téléphone n'a pas été changer")
+            display_red_message("Le numéro de téléphone n'a pas été changer")
         else:
             user.phone_number = phone_number
-            self.utils.display_green_message("Le numéro de téléphone à été changer.")
+            display_green_message("Le numéro de téléphone à été changer.")
         return user
 
     def display_management_menu(self, username):
@@ -119,13 +119,13 @@ class UserView:
             "u": " mettre à jour un utilisateur",
             "d": " suprimer un utilisateur",
         }
-        choice = self.utils.create_menu(options)
+        choice = self.menu.global_menu(options)
         return choice
 
     def confirm_choice(self, user_to_delete):
         confirmation = ""
         while confirmation != "q":
-            confirmation = self.utils.information_menu(
+            confirmation = self.menu.information_menu(
                 asking_sentence="êtes-vous sûr de vouloir supprimer "
                 + f"l'utilisateur '{user_to_delete.complete_name}' (y/n)"
             )
@@ -138,9 +138,9 @@ class UserView:
 
     def display_information(self, user_save, succes_message, error_message):
         if user_save is True:
-            self.utils.display_green_message(f"{succes_message}")
+            display_green_message(f"{succes_message}")
         else:
-            self.utils.display_red_message(f"{error_message}")
+            display_red_message(f"{error_message}")
 
     def user_menu(self):
         menu_options = {
@@ -149,7 +149,7 @@ class UserView:
             "u": "Mettez à jour un utilisateur",
             "d": "Supprimez un utilisateur",
         }
-        menu = self.utils.create_menu(options=menu_options)
+        menu = self.menu.global_menu(options=menu_options)
         if menu == "q":
             return None
         else:

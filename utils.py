@@ -4,20 +4,35 @@ import secrets
 import string
 from colorama import init, Fore, Style
 
+# Init from colorama
+init()
 
-class Utils:
+
+def display_red_message(message):
+    print(f"{Fore.RED} {message} {Style.RESET_ALL}")
+
+
+def display_green_message(message):
+    print(f"{Fore.GREEN} {message} {Style.RESET_ALL}")
+
+
+def generate_password(length=12):
+    alphabet = string.ascii_letters + string.digits + string.punctuation
+    password = "".join(secrets.choice(alphabet) for _ in range(length))
+    print(
+        "Voici le password généré:\n"
+        + f"{Fore.GREEN}{password}{Style.RESET_ALL}"
+        + "\nPensé à bien le noté, il ne sera afficher qu'une seule fois"
+        + " et il est a transmettre à votre nouveau collaborateur.\n"
+        + " Il sera demander pour la première connexion."
+    )
+    return password
+
+
+class Menu:
     """Class created to not repeat some part of code like menu structure."""
 
-    def __init__(self):
-        init()  # TODO: je le mette en global
-
-    def display_red_message(self, message):
-        print(f"{Fore.RED} {message} {Style.RESET_ALL}")
-
-    def display_green_message(self, message):
-        print(f"{Fore.GREEN} {message} {Style.RESET_ALL}")
-
-    def create_menu(self, options):
+    def global_menu(self, options):
         """Create a menu in while loop,
         destinated to views, options need to be a dict.
         This function include -'q' option like other choice.
@@ -49,18 +64,18 @@ class Utils:
     def information_menu(
         self,
         asking_sentence,
-        constant=None,
-        reverse_constant=None,
-        not_in_constant_message=None,
+        possible_response=None,
+        value_in_sentence=None,
+        not_conform_message=None,
         in_lower=False,
     ):
         """Create a menu in while loop,
         destinated to views.
         The parameter asking_sentence defines the prompt shown
         to the user for input.
-        If constant is passed, it is used to check if choice is in constant.
-        If reverse_constant is passed, it is used to check
-        if reverse_constant in choice. Use not_in_constant_message too.
+        If possible_response is passed, it is used to check if choice is in possible_response.
+        If value_in_sentence is passed, it is used to check
+        if value_in_sentence in choice. Use not_conform_message too.
         This function include -'q' option like other choice.
         If 'q' option is selected, this method will return None"""
         choice = ""
@@ -72,17 +87,17 @@ class Utils:
                     "La variable asking_sentence doit être une chaine de caractère"
                 )
                 return None
-            if constant and reverse_constant:
+            if possible_response and value_in_sentence:
                 raise TypeError(
-                    "Cette méthode ne peut prendre qu'une constante ou une"
-                    + " constante renversé, mais pas les deux à la fois."
+                    "Cette méthode ne peut prendre qu'une possible_response ou une"
+                    + " value_in_sentence, mais pas les deux à la fois."
                 )
-            if not_in_constant_message:
+            if not_conform_message:
                 try:
-                    not_in_constant_message = str(not_in_constant_message)
+                    not_conform_message = str(not_conform_message)
                 except ValueError:
                     self.display_red_message(
-                        "La variable not_in_constant_message doit"
+                        "La variable not_conform_message doit"
                         + " être une chaine de caractère"
                     )
             if in_lower:
@@ -95,21 +110,21 @@ class Utils:
                 self.display_red_message("Ce champ ne peut pas être vide")
             elif choice == "q" or choice == "Q":
                 return None
-            elif constant:
-                if choice not in constant and not_in_constant_message:
-                    self.display_red_message(f"{not_in_constant_message}")
-                elif choice not in constant and not not_in_constant_message:
+            elif possible_response:
+                if choice not in possible_response and not_conform_message:
+                    self.display_red_message(f"{not_conform_message}")
+                elif choice not in possible_response and not not_conform_message:
                     self.display_red_message(
                         "La réponse donnée ne correspond pas aux attentes."
                     )
                 else:
                     return choice
-            elif reverse_constant:
-                if reverse_constant not in choice and not_in_constant_message:
+            elif value_in_sentence:
+                if value_in_sentence not in choice and not_conform_message:
                     self.display_red_message(
-                        f"{Fore.RED} {not_in_constant_message} {Style.RESET_ALL}"
+                        f"{Fore.RED} {not_conform_message} {Style.RESET_ALL}"
                     )
-                elif reverse_constant not in choice and not not_in_constant_message:
+                elif value_in_sentence not in choice and not not_conform_message:
                     self.display_red_message(
                         "La réponse donnée ne correspond pas aux attentes."
                     )
@@ -118,14 +133,22 @@ class Utils:
             else:
                 return choice
 
-    def generate_password(self, length=12):
-        alphabet = string.ascii_letters + string.digits + string.punctuation
-        password = "".join(secrets.choice(alphabet) for _ in range(length))
-        print(
-            "Voici le password généré:\n"
-            + f"{Fore.GREEN}{password}{Style.RESET_ALL}"
-            + "\nPensé à bien le noté, il ne sera afficher qu'une seule fois"
-            + " et il est a transmettre à votre nouveau collaborateur.\n"
-            + " Il sera demander pour la première connexion."
-        )
-        return password
+    def confirm_choice(self, to_confirm):
+        confirmation = ""
+        while confirmation != "q":
+            confirmation = self.menu.information_menu(
+                asking_sentence="êtes-vous sûr de vouloir supprimer "
+                + f" {to_confirm} (y/n)"
+            )
+            if confirmation == "y":
+                return True
+            elif confirmation == "n" or confirmation == "q":
+                return False
+            else:
+                continue
+
+    def display_result_information(self, boolean, succes_message, error_message):
+        if boolean is True:
+            display_green_message(f"{succes_message}")
+        else:
+            display_red_message(f"{error_message}")

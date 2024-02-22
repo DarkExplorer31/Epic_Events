@@ -2,8 +2,7 @@
 
 from db import DataBase
 from controllers.authenticationmanager import AuthenticationController
-from controllers.usermanager import UserManager
-from models.user_model import UserModel
+from controllers.crmmanager import CRMManager
 
 
 def main():
@@ -15,17 +14,10 @@ def main():
         if not authenticate_user:
             return None
         choice = ""
+        crm = CRMManager(db_session, authenticate_user)
         while choice != "q":
             choice = authentication_controller.main_menu(user=authenticate_user)
-            if choice == "u":
-                user_controller = UserManager(db_session, authenticate_user)
-                user_controller.run()
-            elif choice == "c":
-                pass
-            elif choice == "e":
-                pass
-            elif choice == "cl":
-                pass
+            crm.run(choice)
         db_session.close()
 
 

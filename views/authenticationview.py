@@ -1,22 +1,22 @@
 """Authentication view"""
 
-from utils import Utils
+from utils import Menu, display_red_message
 
 
 class AuthenticationView:
     CHOICES = ["u", "c", "e", "cl", "q"]
 
     def __init__(self):
-        self.utils = Utils()
+        self.menu = Menu()
 
     def ask_authentication(self):
         print("Bienvenue dans le menu d'authentification\n")
-        login = self.utils.information_menu(
+        login = self.menu.information_menu(
             asking_sentence="Veuillez entrer votre identifiant", in_lower=False
         )
         if not login:
             return None
-        password = self.utils.information_menu(
+        password = self.menu.information_menu(
             asking_sentence="Veuillez entrer votre mot de passe", in_lower=False
         )
         if not password:
@@ -33,17 +33,15 @@ class AuthenticationView:
                 + "Vous devez créer un nouveau mot de passe.\n> "
             )
             if len(password) < 8:
-                self.utils.display_red_message("Votre mot de passe est trop court")
+                display_red_message("Votre mot de passe est trop court")
                 continue
             elif password == last_password:
-                self.utils.display_red_message(
-                    "Votre mot de passe ne doit pas être identique"
-                )
+                display_red_message("Votre mot de passe ne doit pas être identique")
             password_confirm = input("Entrer de nouveau votre mot de passe\n> ")
             if password == password_confirm:
                 return password
             else:
-                self.utils.display_red_message("Votre mot de passe ne correspond pas")
+                display_red_message("Votre mot de passe ne correspond pas")
 
     def select_menu_by_role(self, user):
         role = user.role.value
@@ -69,7 +67,7 @@ class AuthenticationView:
             }
         else:
             return None
-        choice = self.utils.create_menu(choice_option)
+        choice = self.menu.global_menu(choice_option)
         if choice in self.CHOICES:
             return choice
         else:

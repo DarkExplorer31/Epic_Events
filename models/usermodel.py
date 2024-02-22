@@ -3,7 +3,7 @@
 import hashlib
 from sqlalchemy.exc import IntegrityError
 
-from .user import User
+from .db_models import User
 
 
 class UserModel:
