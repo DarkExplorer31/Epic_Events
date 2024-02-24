@@ -53,6 +53,16 @@ class CRMManager:
                 + " n'a pas pu être créer.\n",
             )
         elif concerned_object == "client":
+            new_client = self.client_model.create_client(self.current_user,informations)
+            self.menu.display_result_information(
+                new_client,
+                succes_message="Le nouveau client à été créer avec succès\n",
+                error_message="Un problème est survenu, vérifier"
+                + " que le numero de téléphone ou l'email n'est pas"
+                + " déjà attribuer.\nLe client"
+                + " n'a pas pu être créer.\n",
+            )
+        elif concerned_object == "contract":
             pass
 
     # Update and Delete object part

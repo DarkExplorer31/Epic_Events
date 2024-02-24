@@ -122,25 +122,6 @@ class UserView:
         choice = self.menu.global_menu(options)
         return choice
 
-    def confirm_choice(self, user_to_delete):
-        confirmation = ""
-        while confirmation != "q":
-            confirmation = self.menu.information_menu(
-                asking_sentence="êtes-vous sûr de vouloir supprimer "
-                + f"l'utilisateur '{user_to_delete.complete_name}' (y/n)"
-            )
-            if confirmation == "y":
-                return True
-            elif confirmation == "n" or confirmation == "q":
-                return False
-            else:
-                continue
-
-    def display_information(self, user_save, succes_message, error_message):
-        if user_save is True:
-            display_green_message(f"{succes_message}")
-        else:
-            display_red_message(f"{error_message}")
 
     def user_menu(self):
         menu_options = {
