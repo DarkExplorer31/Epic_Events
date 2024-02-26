@@ -68,7 +68,7 @@ class UserView:
         else:
             return None
 
-    def update_user_information_view(self, user):
+    def update_user_informations_view(self, user):
         """Manager view, ask role, complete_name and phone_number
         to update User in db."""
         print(
@@ -121,17 +121,3 @@ class UserView:
         }
         choice = self.menu.global_menu(options)
         return choice
-
-
-    def user_menu(self):
-        menu_options = {
-            "t": "Voir tout les utilisateurs",
-            "a": "Ajoutez un utilisateur",
-            "u": "Mettez à jour un utilisateur",
-            "d": "Supprimez un utilisateur",
-        }
-        menu = self.menu.global_menu(options=menu_options)
-        if menu == "q":
-            return None
-        else:
-            return menu

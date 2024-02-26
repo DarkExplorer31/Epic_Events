@@ -75,19 +75,20 @@ class UserModel:
         """Update a User in Database.
         Only give to this method the user with informaton updated.
         Return a Boolean."""
-        user_in_db = self.session.query(User).filter_by(id=user_to_update.id).first()
-        if user_in_db:
-            try:
-                user_in_db.role = user_to_update.role
-                user_in_db.complete_name = user_to_update.complete_name
-                user_in_db.email = user_to_update.email
-                user_in_db.phone_number = user_to_update.phone_number
-                self.session.commit()
-                return True
-            except IntegrityError:
-                self.session.rollback()
+        try:
+            user_in_db = (
+                self.session.query(User).filter_by(id=user_to_update.id).first()
+            )
+            if not user_in_db:
                 return False
-        else:
+            user_in_db.role = user_to_update.role
+            user_in_db.complete_name = user_to_update.complete_name
+            user_in_db.email = user_to_update.email
+            user_in_db.phone_number = user_to_update.phone_number
+            self.session.commit()
+            return True
+        except IntegrityError:
+            self.session.rollback()
             return False
 
     def delete_user(self, user_to_delete):

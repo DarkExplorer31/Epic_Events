@@ -46,7 +46,7 @@ class AuthenticationView:
     def select_menu_by_role(self, user):
         role = user.role.value
         choice_option = {}
-        if role == "Saleperson":
+        if role == "Sales":
             choice_option = {
                 "c": "La gestion des contrats",
                 "e": "La gestion des évenements",

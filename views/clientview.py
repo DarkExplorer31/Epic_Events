@@ -1,4 +1,4 @@
-"""Client View"""
+"""Client view"""
 
 from utils import Menu, display_green_message, display_red_message
 
@@ -18,9 +18,7 @@ class ClientView:
             display_red_message("Votre liste de client actuel est vide.\n")
 
     def add_new_client_view(self):
-        print(
-            f"Bienvenue dans la création d'un nouveau client\n"
-        )
+        print(f"Bienvenue dans la création d'un nouveau client\n")
         while True:
             complete_name = self.menu.information_menu(
                 asking_sentence="Veuillez remplir le nom complet du contact client"
@@ -39,7 +37,9 @@ class ClientView:
             )
             if not phone_number:
                 return None
-            company_name = self.menu.information_menu(asking_sentence="Veuillez remplir le nomde la compagnie")
+            company_name = self.menu.information_menu(
+                asking_sentence="Veuillez remplir le nom de la compagnie"
+            )
             if not company_name:
                 return None
             return [complete_name, email, phone_number, company_name]
@@ -47,19 +47,20 @@ class ClientView:
     def find_client(self):
         print(f"Bienvenue dans la fonction de recherche d'un client")
         email = self.menu.information_menu(
-                asking_sentence="Veuillez remplir son email",
-                value_in_sentence=self.EMAIL_TYPE,
-                not_conform_message="L'email doit comporter un '@'",
-            )
+            asking_sentence="Veuillez remplir son email",
+            value_in_sentence=self.EMAIL_TYPE,
+            not_conform_message="L'email doit comporter un '@'",
+        )
         if not email:
             return None
-        else: 
+        else:
             return email
-        
+
     def update_client_informations_view(self, client):
         print(
             "\n"
             + f"Vous voulez mettre à jour les informations de {client.company_name}."
+            + "\n"
             + f"Actuellement, le contact est: {client.email}"
             + "\n"
             + f"le numéro de téléphone est: {client.phone_number}"
@@ -69,18 +70,18 @@ class ClientView:
             + f"et le nom de l'entreprise est: {client.company_name}"
         )
         complete_name = self.menu.information_menu(
-                asking_sentence="Veuillez remplir le nom complet du contact client"
-            )
+            asking_sentence="Veuillez remplir le nom complet du contact client"
+        )
         if not complete_name:
             display_red_message("Le nom n'a pas été changer")
         else:
             client.complete_name = complete_name
             display_green_message("Le nom à été changer.")
         email = self.menu.information_menu(
-                asking_sentence="Veuillez remplir son email",
-                value_in_sentence=self.EMAIL_TYPE,
-                not_conform_message="L'email doit comporter un '@'",
-            )
+            asking_sentence="Veuillez remplir son email",
+            value_in_sentence=self.EMAIL_TYPE,
+            not_conform_message="L'email doit comporter un '@'",
+        )
         if not email:
             display_red_message("L'email' n'a pas été changer")
         else:
@@ -94,7 +95,9 @@ class ClientView:
         else:
             client.phone_number = phone_number
             display_green_message("Le numéro de téléphone à été changer.")
-        company_name = self.menu.information_menu(asking_sentence="Veuillez remplir le nomde la compagnie")
+        company_name = self.menu.information_menu(
+            asking_sentence="Veuillez remplir le nomde la compagnie"
+        )
         if not company_name:
             display_red_message("Le numéro de téléphone n'a pas été changer")
         else:

@@ -13,8 +13,8 @@ class ContractModel:
     def create_contract(self, current_user, client, informations):
         try:
             new_contract = Contract(
-                user_id=current_user,
-                client_id=client,
+                user_id=current_user.id,
+                client_id=client.id,
                 total_cost=informations[0],
                 balance=informations[1],
                 status=informations[2],
@@ -32,10 +32,7 @@ class ContractModel:
 
     def search_contract(self, id):
         if id:
-            contract = (
-                self.session.query(Contract)
-                .filter(
-                    Contract.id == id).first())
+            contract = self.session.query(Contract).filter(Contract.id == id).first()
             if contract:
                 return contract
             else:
@@ -43,27 +40,30 @@ class ContractModel:
         else:
             return None
 
-    def update_contract(self,contract_to_update):
+    def update_contract(self, contract_to_update):
         """Update a Contract in Database"""
-        contract_in_db = self.session.query(Contract).filter_by(id=contract_to_update.id).first()
-        if contract_in_db:
-            try:
-                contract_in_db.user_id = contract_to_update.user_id
-                contract_in_db.client_id = contract_to_update.client_id
-                contract_in_db.total_cost = contract_to_update.total_cost
-                contract_in_db.balance = contract_to_update.balance
-                contract_in_db.status = contract_to_update.status
-                contract_in_db.updating_date = datetime.now
-                self.session.commit()
-                return True
-            except IntegrityError:
-                self.session.rollback()
+        try:
+            contract_in_db = (
+                self.session.query(Contract).filter_by(id=contract_to_update.id).first()
+            )
+            if not contract_in_db:
                 return False
-        else:
+            contract_in_db.user_id = contract_to_update.user_id
+            contract_in_db.client_id = contract_to_update.client_id
+            contract_in_db.total_cost = contract_to_update.total_cost
+            contract_in_db.balance = contract_to_update.balance
+            contract_in_db.status = contract_to_update.status
+            contract_in_db.updating_date = datetime.datetime.now()
+            self.session.commit()
+            return True
+        except IntegrityError:
+            self.session.rollback()
             return False
 
     def delete_contract(self, contract_to_delete):
-        contract_in_db = self.session.query(Contract).filter_by(id=contract_to_delete.id).first()
+        contract_in_db = (
+            self.session.query(Contract).filter_by(id=contract_to_delete.id).first()
+        )
         if contract_in_db:
             self.session.delete(contract_to_delete)
             self.session.commit()

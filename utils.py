@@ -55,9 +55,9 @@ class Menu:
             print("-q: Quitter ce menu." + f"{Style.RESET_ALL}")
             choice = input("Entrez votre choix\n> ").lower()
             if choice == "":
-                self.display_red_message("Votre choix ne peut pas être vide.")
+                display_red_message("Votre choix ne peut pas être vide.")
             elif choice not in choice_option:
-                self.display_red_message("Votre choix n'est pas compris")
+                display_red_message("Votre choix n'est pas compris")
             else:
                 return choice
 
@@ -83,7 +83,7 @@ class Menu:
             try:
                 asking_sentence = str(asking_sentence)
             except ValueError:
-                self.display_red_message(
+                display_red_message(
                     "La variable asking_sentence doit être une chaine de caractère"
                 )
                 return None
@@ -96,7 +96,7 @@ class Menu:
                 try:
                     not_conform_message = str(not_conform_message)
                 except ValueError:
-                    self.display_red_message(
+                    display_red_message(
                         "La variable not_conform_message doit"
                         + " être une chaine de caractère"
                     )
@@ -107,25 +107,25 @@ class Menu:
             else:
                 choice = input(f"{asking_sentence} ou 'q' pour quitter" + "\n> ")
             if not choice:
-                self.display_red_message("Ce champ ne peut pas être vide")
+                display_red_message("Ce champ ne peut pas être vide")
             elif choice == "q" or choice == "Q":
                 return None
             elif possible_response:
                 if choice not in possible_response and not_conform_message:
-                    self.display_red_message(f"{not_conform_message}")
+                    display_red_message(f"{not_conform_message}")
                 elif choice not in possible_response and not not_conform_message:
-                    self.display_red_message(
+                    display_red_message(
                         "La réponse donnée ne correspond pas aux attentes."
                     )
                 else:
                     return choice
             elif value_in_sentence:
                 if value_in_sentence not in choice and not_conform_message:
-                    self.display_red_message(
+                    display_red_message(
                         f"{Fore.RED} {not_conform_message} {Style.RESET_ALL}"
                     )
                 elif value_in_sentence not in choice and not not_conform_message:
-                    self.display_red_message(
+                    display_red_message(
                         "La réponse donnée ne correspond pas aux attentes."
                     )
                 else:
@@ -136,7 +136,7 @@ class Menu:
     def confirm_choice(self, to_confirm):
         confirmation = ""
         while confirmation != "q":
-            confirmation = self.menu.information_menu(
+            confirmation = self.information_menu(
                 asking_sentence="êtes-vous sûr de vouloir supprimer "
                 + f" {to_confirm} (y/n)"
             )
@@ -152,3 +152,26 @@ class Menu:
             display_green_message(f"{succes_message}")
         else:
             display_red_message(f"{error_message}")
+
+    def crud_menu(self, designation):
+        menu_options = {
+            "t": f"Voir tout les {designation}s",
+            "a": f"Ajoutez un {designation}",
+            "u": f"Mettez à jour un {designation}",
+            "d": f"Supprimez un {designation}",
+        }
+        menu = self.global_menu(options=menu_options)
+        if menu == "q":
+            return None
+        else:
+            return menu
+
+    def no_permission_menu(self):
+        menu_options = {
+            "t": "Voir tout les contrats",
+        }
+        menu = self.global_menu(options=menu_options)
+        if menu == "q":
+            return None
+        else:
+            return menu
