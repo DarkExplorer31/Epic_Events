@@ -1,6 +1,7 @@
 """Authentication view"""
 
-from utils import Menu, display_red_message
+import getpass
+from utils import Menu, display_red_message, display_green_message
 
 
 class AuthenticationView:
@@ -9,26 +10,49 @@ class AuthenticationView:
     def __init__(self):
         self.menu = Menu()
 
+    # Display specific messages:
+    def display_quit(self):
+        display_red_message("Vous quittez le programme.")
+
+    def display_acces_non_autorise(self):
+        display_red_message(
+            "Les identifiants fournis sont incorrects.\nAccès non autorisé"
+        )
+
+    def display_acces_autorise(self):
+        display_green_message("Accès autorisé")
+
+    def display_password_changed(self):
+        display_green_message("Mot de passe changé.\nAccès autorisé")
+
+    def display_unchange_password(self):
+        display_red_message(
+            "Une erreur s'est produite.\n"
+            + " Vos modifications n'ont pas "
+            + "été prises en compte."
+        )
+
+    def display_hello_user(self, user):
+        display_green_message(f"Bonjour, {user.complete_name}")
+
+    # Asking user information:
     def ask_authentication(self):
         print("Bienvenue dans le menu d'authentification\n")
         login = self.menu.information_menu(
-            asking_sentence="Veuillez entrer votre identifiant", in_lower=False
+            asking_sentence="Veuillez entrer votre identifiant"
         )
         if not login:
             return None
-        password = self.menu.information_menu(
-            asking_sentence="Veuillez entrer votre mot de passe", in_lower=False
-        )
+        password = getpass.getpass("Veuillez entrer votre mot de passe:\n>")
         if not password:
             return None
-        authentication_data = [login, password]
-        return authentication_data
+        return {"login": login, "password": password}
 
     def add_new_password(self, last_password):
         """New User view. This view is used to define a
-        new personal password in first loggin."""
+        new personal password on first login."""
         while True:
-            password = input(
+            password = getpass.getpass(
                 "Vous ne vous êtes jamais connecté auparavant. "
                 + "Vous devez créer un nouveau mot de passe.\n> "
             )
@@ -37,7 +61,9 @@ class AuthenticationView:
                 continue
             elif password == last_password:
                 display_red_message("Votre mot de passe ne doit pas être identique")
-            password_confirm = input("Entrer de nouveau votre mot de passe\n> ")
+            password_confirm = getpass.getpass(
+                "Entrez à nouveau votre mot de passe\n> "
+            )
             if password == password_confirm:
                 return password
             else:
@@ -49,26 +75,22 @@ class AuthenticationView:
         if role == "Sales":
             choice_option = {
                 "c": "La gestion des contrats",
-                "e": "La gestion des évenements",
-                "cl": "La gestions des clients",
+                "e": "La gestion des événements",
+                "cl": "La gestion des clients",
             }
         elif role == "Manager":
             choice_option = {
                 "u": "La gestion des collaborateurs",
                 "c": "La gestion des contrats",
-                "e": "La gestion des évenements",
+                "e": "La gestion des événements",
                 "cl": "L'affichage des clients",
             }
         elif role == "Support":
             choice_option = {
                 "c": "L'affichage des contrats",
-                "e": "La gestion des évenements",
+                "e": "La gestion des événements",
                 "cl": "L'affichage des clients",
             }
-        else:
-            return None
         choice = self.menu.global_menu(choice_option)
         if choice in self.CHOICES:
             return choice
-        else:
-            return None

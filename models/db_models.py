@@ -29,7 +29,8 @@ class User(Base):
     creation_date = Column(Date, default=datetime.now, nullable=False)
     first_using_password = Column(Boolean, default=True)
 
-    contracts = relationship("Contract", back_populates="users")
+    contracts = relationship("Contract", back_populates="user")
+    support_events = relationship("Event", back_populates="support")
 
     def __str__(self):
         return self.email
@@ -85,17 +86,17 @@ class Contract(Base):
     creation_date = Column(Date, default=datetime.now, nullable=False)
     status = Column(Enum(StatusEnum), nullable=False)
 
-    users = relationship("User", back_populates="contracts")
+    user = relationship("User", back_populates="contracts")
     client = relationship("Client", back_populates="contracts")
     events = relationship("Event", back_populates="contract")
 
     def __str__(self):
         client_name = self.client.complete_name
-        sales_name = self.users.complete_name
+        username = self.user.complete_name
         return (
             f"Id du contrat: {self.id}, client: {client_name},"
             + "\n"
-            + f" commercial: {sales_name}, coût total: {self.total_cost},"
+            + f" commercial: {username}, coût total: {self.total_cost},"
             + f" reste à régler: {self.balance}, date de création: "
             + f" {self.creation_date}, status: {self.status}"
             + "\n"
@@ -107,11 +108,15 @@ class Event(Base):
 
     id = Column(Integer, primary_key=True)
     contract_id = Column(Integer, ForeignKey("contracts.id"), nullable=False)
+    support_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     starting_event_date = Column(Date, nullable=False)
     ending_envent_date = Column(Date, nullable=False)
-    support_contact_name = Column(String)
-    localisation = Column(String, nullable=False)
+    location = Column(String, nullable=False)
     attendees = Column(Integer)
     notes = Column(String)
 
     contract = relationship("Contract", back_populates="events")
+    support = relationship("User", back_populates="support_events")
+
+    def __str__(self):
+        return f"L'évènement {self.id}: {self.starting_event_date} à {self.ending_envent_date}, Localisation: {self.location}"

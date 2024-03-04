@@ -3,21 +3,21 @@
 import datetime
 from sqlalchemy.exc import IntegrityError
 
-from .db_models import Contract
+from .db_models import Contract, Client
 
 
 class ContractModel:
     def __init__(self, session):
         self.session = session
 
-    def create_contract(self, current_user, client, informations):
+    def create(self, user_id, client_id, total_cost, balance, status):
         try:
             new_contract = Contract(
-                user_id=current_user.id,
-                client_id=client.id,
-                total_cost=informations[0],
-                balance=informations[1],
-                status=informations[2],
+                user_id=user_id,
+                client_id=client_id,
+                total_cost=total_cost,
+                balance=balance,
+                status=status,
             )
             self.session.add(new_contract)
             self.session.commit()
@@ -26,22 +26,24 @@ class ContractModel:
             self.session.rollback()
             return False
 
-    def get_all_contracts(self):
-        contracts = self.session.query(Contract)
-        return contracts
+    def get_all(self):
+        return self.session.query(Contract).all()
 
-    def search_contract(self, id):
-        if id:
-            contract = self.session.query(Contract).filter(Contract.id == id).first()
-            if contract:
-                return contract
-            else:
-                return None
-        else:
-            return None
+    def get_all_by_status(self, status):
+        return self.session.query(Contract).filter(Contract.status == status).all()
 
-    def update_contract(self, contract_to_update):
-        """Update a Contract in Database"""
+    def get_all_by_user_responsibility(self, user_id):
+        return (
+            self.session.query(Contract)
+            .join(Client)
+            .filter(Client.user_id == user_id)
+            .all()
+        )
+
+    def search(self, id):
+        return self.session.query(Contract).filter(Contract.id == id).first()
+
+    def update(self, contract_to_update):
         try:
             contract_in_db = (
                 self.session.query(Contract).filter_by(id=contract_to_update.id).first()
@@ -60,7 +62,7 @@ class ContractModel:
             self.session.rollback()
             return False
 
-    def delete_contract(self, contract_to_delete):
+    def delete(self, contract_to_delete):
         contract_in_db = (
             self.session.query(Contract).filter_by(id=contract_to_delete.id).first()
         )

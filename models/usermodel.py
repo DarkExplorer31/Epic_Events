@@ -10,16 +10,16 @@ class UserModel:
     def __init__(self, session):
         self.session = session
 
-    def create_user(self, user_info):
+    def create(self, role, complete_name, email, phone_number, password):
         try:
-            user_info[4] = hashlib.sha256(user_info[4].encode()).hexdigest()
-            user_info[0] = user_info[0].upper()
+            password = hashlib.sha256(password.encode()).hexdigest()
+            role = role.upper()
             new_user = User(
-                role=user_info[0],
-                complete_name=user_info[1],
-                email=user_info[2],
-                phone_number=user_info[3],
-                password=user_info[4],
+                role=role,
+                complete_name=complete_name,
+                email=email,
+                phone_number=phone_number,
+                password=password,
             )
             self.session.add(new_user)
             self.session.commit()
@@ -28,17 +28,16 @@ class UserModel:
             self.session.rollback()
             return False
 
-    def get_all_users(self):
-        users_email = []
-        users = self.session.query(User)
-        for user in users:
-            users_email.append(user)
-        return users
+    def get_all(self):
+        return self.session.query(User).all()
 
-    def search_user(self, loggin, password=None):
+    def get_all_support_user(self):
+        return self.session.query(User).filter_by(role="SUPPORT").all()
+
+    def search(self, loggin, password=None):
         if password:
             hashed_password = hashlib.sha256(password.encode()).hexdigest()
-            user = (
+            return (
                 self.session.query(User)
                 .filter(
                     User.email == loggin,
@@ -47,20 +46,15 @@ class UserModel:
                 .first()
             )
         else:
-            user = (
+            return (
                 self.session.query(User)
                 .filter(
                     User.email == loggin,
                 )
                 .first()
             )
-        if user:
-            return user
-        else:
-            return None
 
     def change_password(self, user_id, new_password):
-        """Change the password of a user."""
         user_in_db = self.session.query(User).filter_by(id=user_id).first()
         if user_in_db:
             hashed_password = hashlib.sha256(new_password.encode()).hexdigest()
@@ -71,10 +65,7 @@ class UserModel:
         else:
             return False
 
-    def update_user(self, user_to_update):
-        """Update a User in Database.
-        Only give to this method the user with informaton updated.
-        Return a Boolean."""
+    def update(self, user_to_update):
         try:
             user_in_db = (
                 self.session.query(User).filter_by(id=user_to_update.id).first()
@@ -91,10 +82,10 @@ class UserModel:
             self.session.rollback()
             return False
 
-    def delete_user(self, user_to_delete):
-        user_in_db = self.session.query(User).filter_by(id=user_to_delete.id).first()
+    def delete(self, user_id):
+        user_in_db = self.session.query(User).filter_by(id=user_id).first()
         if user_in_db:
-            self.session.delete(user_to_delete)
+            self.session.delete(user_in_db)
             self.session.commit()
             return True
         else:

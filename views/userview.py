@@ -10,21 +10,60 @@ class UserView:
     def __init__(self):
         self.menu = Menu()
 
-    def display_users(self, all_users):
-        for user in all_users:
-            print(f"-{user}")
-        display_green_message("La liste est terminer.\n")
+    # Displaying methods
+    def display_users(self, users):
+        if users:
+            for user in users:
+                print(f"-{user}")
+        else:
+            display_red_message("Votre liste d'utilisateur actuel est vide.\n")
 
-    def add_new_user_view(self, username):
-        """Manager view, ask role, complete_name, email and phone_number
-        to create a new User in db. The password is generated and not asking."""
-        print(
-            f"Bienvenue dans la création d'un nouveau collaborateur {username}" + "\n"
-        )
+    def display_roles(self):
         print("Les roles qui peuvent être: ")
         for role in self.ROLE:
             print(f"-{role}")
         print("\n")
+
+    def display_created(self):
+        display_green_message("L'utilisateur a été créé.")
+
+    def display_not_created(self):
+        display_red_message("L'utilisateur n'a pas été créé.")
+
+    def display_unfound_user(self):
+        display_red_message("L'utilisateur n'a pas été trouvé.")
+
+    def display_selected_user(self, user):
+        print(
+            "\n"
+            + f"Vous avez sélectionné l'utilisateur : {user.email}."
+            + "\nVous ne pourrez changer que le rôle, le nom complet"
+            + " ou le numéro de téléphone."
+            + f" Actuellement, son rôle est : {user.role}."
+            + "\nLe numéro de téléphone est : {user.phone_number}."
+            + "\nEt le nom complet : {user.complete_name}."
+            + "\n"
+        )
+
+    def display_user_is_update(self):
+        display_green_message("L'utilisateur a été mis à jour.")
+
+    def display_user_is_not_update(self):
+        display_red_message("L'utilisateur n'a pas été mis à jour.")
+
+    def display_user_is_delete(self):
+        display_green_message("L'utilisateur a été supprimé.")
+
+    def display_user_is_not_delete(self):
+        display_red_message("L'utilisateur n'a pas été supprimé.")
+
+    def display_user_is_not_authorized(self):
+        display_red_message("Vous n'avez pas le droit d'accéder à ces fonctionnalités.")
+
+    # Other methods
+    def get_new_user_information(self):
+        print("Bienvenue dans la création d'un nouveau collaborateur\n")
+        self.display_roles()
         while True:
             role = self.menu.information_menu(
                 asking_sentence="Veuillez remplir son nouveau rôle",
@@ -56,33 +95,25 @@ class UserView:
                 + "passe dès sa première connexion"
             )
             password = generate_password()
-            return [role, complete_name, email, phone_number, password]
+            return {
+                "role": role,
+                "complete_name": complete_name,
+                "email": email,
+                "phone_number": phone_number,
+                "password": password,
+            }
 
-    def find_user(self):
-        print(f"Bienvenue dans la fonction de recherche d'un collaborateur")
-        email = input(
-            "Veuillez saisir l'email du collaborateur à mettre à jour ou 'q' pour quitter\n> "
+    def search_user(self):
+        print("Bienvenue dans la fonction de recherche d'un collaborateur")
+        email = self.menu.information_menu(
+            asking_sentence="Veuillez remplir son email",
+            value_in_sentence=self.EMAIL_TYPE,
+            not_conform_message="L'email doit comporter un '@'",
         )
-        if email:
-            return email
-        else:
-            return None
+        return email
 
-    def update_user_informations_view(self, user):
-        """Manager view, ask role, complete_name and phone_number
-        to update User in db."""
-        print(
-            "\n"
-            + f"Vous voulez mettre à jour les information de {user.email}."
-            + "\nVous ne pourrait changer que le role,"
-            + " le nom complet ou le numéro de téléphone."
-            + f"Actuellement, son role est: {user.role}"
-            + "\n"
-            + f"le numéro de téléphone est: {user.phone_number}"
-            + "\n"
-            + f"et le nom complet: {user.complete_name}"
-            + "\n"
-        )
+    def get_update_user_informations(self, user):
+        self.display_selected_user(user)
         role = self.menu.information_menu(
             asking_sentence="Veuillez remplir son nouveau rôle",
             possible_response=self.ROLE,
@@ -111,13 +142,9 @@ class UserView:
             display_green_message("Le numéro de téléphone à été changer.")
         return user
 
-    def display_management_menu(self, username):
-        """Manager view, used to display a menu to User with 'Manager' role."""
-        print(f"Bienvenu {username}")
-        options = {
-            "c": "créer un nouvel utilistateur",
-            "u": " mettre à jour un utilisateur",
-            "d": " suprimer un utilisateur",
-        }
-        choice = self.menu.global_menu(options)
+    def delete_confirmation(self, user_email):
+        return self.menu.confirm_choice(user_email)
+
+    def choice_menu(self):
+        choice = self.menu.crud_menu("utilisateur")
         return choice

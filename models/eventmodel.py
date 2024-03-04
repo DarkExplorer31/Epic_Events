@@ -9,16 +9,25 @@ class EventModel:
     def __init__(self, session):
         self.session = session
 
-    def create_event(self, contract, informations):
+    def create(
+        self,
+        contract_id,
+        starting_event_date,
+        ending_event_date,
+        location,
+        attendees,
+        notes,
+        support_id=None,
+    ):
         try:
             new_event = Event(
-                contract_id=contract,
-                starting_event_date=informations[0],
-                ending_event_date=informations[1],
-                support_contact_name=informations[2],
-                localisation=informations[3],
-                attendees=informations[4],
-                notes=informations[5],
+                contract_id=contract_id,
+                support_id=support_id,
+                starting_event_date=starting_event_date,
+                ending_event_date=ending_event_date,
+                location=location,
+                attendees=attendees,
+                notes=notes,
             )
             self.session.add(new_event)
             self.session.commit()
@@ -27,22 +36,19 @@ class EventModel:
             self.session.rollback()
             return False
 
-    def get_all_events(self):
-        events = self.session.query(Event)
-        return events
+    def get_all(self):
+        return self.session.query(Event).all()
 
-    def search_event(self, id):
-        if id:
-            event = self.session.query(Event).filter(Event.id == id).first()
-            if event:
-                return event
-            else:
-                return None
-        else:
-            return None
+    def get_all_attributed_events(self):
+        return self.session.query(Event).filter(Event.support_id != None).all()
 
-    def update_event(self, event_to_update):
-        """Update an Event in Database"""
+    def get_all_non_attributed_events(self):
+        return self.session.query(Event).filter(Event.support_id == None).all()
+
+    def search(self, id):
+        return self.session.query(Event).filter(Event.id == id).first()
+
+    def update(self, event_to_update):
         try:
             event_in_db = (
                 self.session.query(Event).filter_by(id=event_to_update.id).first()
@@ -60,13 +66,4 @@ class EventModel:
             return True
         except IntegrityError:
             self.session.rollback()
-            return False
-
-    def delete_event(self, event_to_delete):
-        event_in_db = self.session.query(Event).filter_by(id=event_to_delete.id).first()
-        if event_in_db:
-            self.session.delete(event_to_delete)
-            self.session.commit()
-            return True
-        else:
             return False

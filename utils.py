@@ -134,24 +134,13 @@ class Menu:
                 return choice
 
     def confirm_choice(self, to_confirm):
-        confirmation = ""
-        while confirmation != "q":
-            confirmation = self.information_menu(
-                asking_sentence="êtes-vous sûr de vouloir supprimer "
-                + f" {to_confirm} (y/n)"
-            )
-            if confirmation == "y":
-                return True
-            elif confirmation == "n" or confirmation == "q":
-                return False
-            else:
-                continue
-
-    def display_result_information(self, boolean, succes_message, error_message):
-        if boolean is True:
-            display_green_message(f"{succes_message}")
-        else:
-            display_red_message(f"{error_message}")
+        confirmation = self.information_menu(
+            asking_sentence="êtes-vous sûr de vouloir supprimer "
+            + f" {to_confirm} (y/n)"
+        )
+        if confirmation == "y":
+            return True
+        return False
 
     def crud_menu(self, designation):
         menu_options = {
@@ -163,8 +152,7 @@ class Menu:
         menu = self.global_menu(options=menu_options)
         if menu == "q":
             return None
-        else:
-            return menu
+        return menu
 
     def no_permission_menu(self):
         menu_options = {
@@ -173,5 +161,4 @@ class Menu:
         menu = self.global_menu(options=menu_options)
         if menu == "q":
             return None
-        else:
-            return menu
+        return menu
