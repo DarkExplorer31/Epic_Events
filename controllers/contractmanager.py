@@ -18,6 +18,9 @@ class ContractManager:
     def get_all_contracts(self):
         all_contracts = self.model.get_all()
         self.view.display_contracts(all_contracts)
+        if not all_contracts:
+            return None
+        return all_contracts
 
     def get_all_clients_under_responsibility(self):
         if self.role == "Manager":
@@ -25,6 +28,9 @@ class ContractManager:
         else:
             all_clients = self.client_model.get_all_by_user_responsibility(self.user_id)
         self.view.display_clients_under_responsibility(all_clients)
+        if not all_clients:
+            return None
+        return all_clients
 
     def get_all_contracts_by_filter(self):
         status = self.view.ask_status()
@@ -35,7 +41,9 @@ class ContractManager:
 
     # Searching methods
     def select_contract(self):
-        self.get_all_contracts()
+        contracts = self.get_all_contracts()
+        if not contracts:
+            return None
         search_id = self.view.search_contract()
         contract = self.model.search(id=search_id)
         if not contract:
@@ -45,7 +53,9 @@ class ContractManager:
     def select_client_under_responsibility(self):
         """Responsibility changes according to user role.
         If the user is a Manager, all clients are under his responsibility."""
-        self.get_all_clients_under_responsibility()
+        clients = self.get_all_clients_under_responsibility()
+        if not clients:
+            return None
         search_email = self.view.search_client_under_responsibility()
         client = self.client_model.search(email=search_email)
         if client and self.role != "Manager" and client.user_id != self.user_id:
@@ -63,7 +73,7 @@ class ContractManager:
         if not data:
             return None
         creation = self.model.create(
-            user_id=self.user_id,
+            user_id=concerned_client.user_id,
             client_id=concerned_client.id,
             total_cost=data["total_cost"],
             balance=data["balance"],
@@ -96,10 +106,7 @@ class ContractManager:
         contract_to_delete = self.select_contract()
         if not contract_to_delete:
             return None
-        confirmation = self.view.delete_confirmation(contract_to_delete.id)
-        if not confirmation:
-            return None
-        deletion = self.model.delete(contract_to_delete.id)
+        deletion = self.model.delete(contract_to_delete)
         if deletion:
             self.view.display_contract_is_delete()
         else:
@@ -112,11 +119,13 @@ class ContractManager:
             return None
         elif choice == "t":
             self.get_all_contracts()
-        elif choice == "a" and self.role in ["Sales", "Manager"]:
+        elif choice == "tf" and self.role == "Sales":
+            self.get_all_contracts_by_filter()
+        elif choice == "a" and self.role == "Manager":
             self.create_new_contract()
         elif choice == "u" and self.role in ["Sales", "Manager"]:
             self.update_contract()
-        elif choice == "d" and self.role in ["Sales", "Manager"]:
+        elif choice == "d" and self.role == "Manager":
             self.delete_contract()
         else:
             self.view.display_not_authorized()

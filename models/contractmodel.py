@@ -66,9 +66,8 @@ class ContractModel:
         contract_in_db = (
             self.session.query(Contract).filter_by(id=contract_to_delete.id).first()
         )
-        if contract_in_db:
-            self.session.delete(contract_to_delete)
-            self.session.commit()
-            return True
-        else:
+        if not contract_in_db:
             return False
+        self.session.delete(contract_to_delete)
+        self.session.commit()
+        return True

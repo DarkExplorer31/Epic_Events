@@ -30,7 +30,6 @@ def generate_password(length=12):
 
 
 class Menu:
-    """Class created to not repeat some part of code like menu structure."""
 
     def global_menu(self, options):
         """Create a menu in while loop,
@@ -133,15 +132,6 @@ class Menu:
             else:
                 return choice
 
-    def confirm_choice(self, to_confirm):
-        confirmation = self.information_menu(
-            asking_sentence="êtes-vous sûr de vouloir supprimer "
-            + f" {to_confirm} (y/n)"
-        )
-        if confirmation == "y":
-            return True
-        return False
-
     def crud_menu(self, designation):
         menu_options = {
             "t": f"Voir tout les {designation}s",
@@ -154,9 +144,9 @@ class Menu:
             return None
         return menu
 
-    def no_permission_menu(self):
+    def no_permission_menu(self, designation):
         menu_options = {
-            "t": "Voir tout les contrats",
+            "t": f"Voir tout les {designation}",
         }
         menu = self.global_menu(options=menu_options)
         if menu == "q":

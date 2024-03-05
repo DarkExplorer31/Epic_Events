@@ -84,9 +84,8 @@ class UserModel:
 
     def delete(self, user_id):
         user_in_db = self.session.query(User).filter_by(id=user_id).first()
-        if user_in_db:
-            self.session.delete(user_in_db)
-            self.session.commit()
-            return True
-        else:
+        if not user_in_db:
             return False
+        self.session.delete(user_in_db)
+        self.session.commit()
+        return True

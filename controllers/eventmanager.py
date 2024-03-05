@@ -19,8 +19,8 @@ class EventManager:
     # Obtaining methods
     def get_all_events(self):
         all_events = self.model.get_all()
-        events = self.view.display_objects(all_events)
-        if not events:
+        self.view.display_objects(all_events)
+        if not all_events:
             return None
         return all_events
 
@@ -32,30 +32,31 @@ class EventManager:
         else:
             all_events = self.get_all_events()
         if not all_events:
+            self.display_empty_list()
             return None
-        events = self.view.display_objects(all_events)
-        if not events:
-            return None
-        return events
+        self.view.display_objects(all_events)
+        return all_events
 
     def get_all_contract_by_affectation(self):
-        all_contract = self.contract_model.get_all_by_user_responsibility(self.user_id)
-        contracts = self.view.display_objects(all_contract)
-        if not contracts:
+        all_contracts = self.contract_model.get_all_by_user_responsibility(self.user_id)
+        if not all_contracts:
             return None
-        return contracts
+        self.view.display_objects(all_contracts)
+        return all_contracts
 
     def get_all_support_user(self):
         all_support_user = self.user_model.get_all_support_user()
-        support_users = self.view.display_objects(all_support_user)
-        if not support_users:
+        if not all_support_user:
+            self.view.display_unfound_support_user()
             return None
-        return support_users
+        self.view.display_objects(all_support_user)
+        return all_support_user
 
     # Searching methods
     def select_contract_under_responsibility(self):
         contracts_to_display = self.get_all_contract_by_affectation()
         if not contracts_to_display:
+            self.view.display_not_contract_exists()
             return None
         search_id = self.view.search()
         contract = self.contract_model.search(id=search_id)
@@ -80,7 +81,7 @@ class EventManager:
         email = self.view.search_support()
         support_user = self.user_model.search(loggin=email)
         if not support_user:
-            self.view.display_unfound_support_user()
+            self.view.display_unfound_support_user_in_db()
         return support_user
 
     # Create method
@@ -92,10 +93,10 @@ class EventManager:
         if not data:
             return None
         creation = self.model.create(
-            contract_id=concerned_contract,
+            contract_id=concerned_contract.id,
             starting_event_date=data["starting_event_date"],
             ending_event_date=data["ending_event_date"],
-            localisation=data["localisation"],
+            location=data["location"],
             attendees=data["attendees"],
             notes=data["notes"],
         )
@@ -110,16 +111,16 @@ class EventManager:
         if not event_to_update:
             return None
         elif event_to_update.support_id == self.user_id:
-            updated_event = self.view.update_event_informations(event_to_update)
+            event_to_update = self.view.update_event_informations(event_to_update)
         elif self.role == "Manager":
             selected_support = self.select_support_to_assign()
             if not selected_support:
                 return None
-            event_to_update.support_contact_name = selected_support
+            event_to_update.support_id = selected_support.id
         else:
             self.view.display_event_is_not_under_responsibility()
             return None
-        update = self.model.update(updated_event)
+        update = self.model.update(event_to_update)
         if update:
             self.view.display_event_is_update()
         else:
@@ -130,13 +131,13 @@ class EventManager:
         choice = self.view.choice_menu(self.role)
         if not choice:
             return None
-        elif choice == "t":
-            self.get_all_contract()
+        if choice == "t":
+            self.get_all_events()
         elif choice == "tf" and self.role in ["Manager", "Support"]:
             self.get_all_event_by_affectation()
         elif choice == "a" and self.role == "Sales":
             self.create_new_event()
         elif choice == "u" and self.role in ["Manager", "Support"]:
             self.update_event()
-        else:
-            self.view.display_not_authorized()
+        elif choice == "q":
+            return None

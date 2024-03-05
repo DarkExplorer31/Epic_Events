@@ -33,7 +33,13 @@ class User(Base):
     support_events = relationship("Event", back_populates="support")
 
     def __str__(self):
-        return self.email
+        return (
+            f"Role: {self.role}\n"
+            + f"Nom complet: {self.complete_name}\n"
+            + f"Email: {self.email}\n"
+            + f"Numéro de téléphone: {self.phone_number}\n"
+            + f"Date de création: {self.creation_date}\n"
+        )
 
 
 class Client(Base):
@@ -51,25 +57,20 @@ class Client(Base):
     contracts = relationship("Contract", back_populates="client")
 
     def __str__(self):
-        representation = (
-            f"{self.company_name}:"
-            + "\ncontact: "
-            + f"{self.complete_name},"
-            + "\nemail du contact: "
-            + f"{self.email},"
-            + "\ntéléphone: "
-            + f"{self.phone_number},"
-            + "\ncréer le: "
-            + f"{self.creation_date}"
-            + "\n"
+        return (
+            f"Nom complet: {self.complete_name}\n"
+            + f"Email: {self.email}\n"
+            + f"Numéro de téléphone: {self.phone_number}\n"
+            + f"Nom de l'entreprise: {self.company_name}\n"
+            + f"Date de création: {self.creation_date}\n"
+            + f"Date de mise à jour: {self.updating_date}\n\n"
         )
-        return representation
 
 
 class StatusEnum(enum.Enum):
     UNSIGNED = "Non signé"
-    UNPAID = "Pas payer"
-    PAID = "Payer"
+    UNPAID = "Pas payé"
+    PAID = "Payé"
 
     def __str__(self):
         return self.value
@@ -82,7 +83,7 @@ class Contract(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     client_id = Column(Integer, ForeignKey("clients.id"), nullable=False)
     total_cost = Column(Float, nullable=False)
-    balance = Column(Float, nullable=False)
+    balance = Column(Float)
     creation_date = Column(Date, default=datetime.now, nullable=False)
     status = Column(Enum(StatusEnum), nullable=False)
 
@@ -92,14 +93,15 @@ class Contract(Base):
 
     def __str__(self):
         client_name = self.client.complete_name
-        username = self.user.complete_name
+        commercial = self.user.complete_name
         return (
-            f"Id du contrat: {self.id}, client: {client_name},"
-            + "\n"
-            + f" commercial: {username}, coût total: {self.total_cost},"
-            + f" reste à régler: {self.balance}, date de création: "
-            + f" {self.creation_date}, status: {self.status}"
-            + "\n"
+            f"ID du contrat: {self.id}\n"
+            + f"Client: {client_name}\n"
+            + f"Commercial: {commercial}\n"
+            + f"Coût total: {self.total_cost}\n"
+            + f"Reste à régler: {self.balance}\n"
+            + f"Date de création: {self.creation_date}\n"
+            + f"Statut: {self.status}\n\n"
         )
 
 
@@ -110,7 +112,7 @@ class Event(Base):
     contract_id = Column(Integer, ForeignKey("contracts.id"), nullable=False)
     support_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     starting_event_date = Column(Date, nullable=False)
-    ending_envent_date = Column(Date, nullable=False)
+    ending_event_date = Column(Date, nullable=False)
     location = Column(String, nullable=False)
     attendees = Column(Integer)
     notes = Column(String)
@@ -119,4 +121,13 @@ class Event(Base):
     support = relationship("User", back_populates="support_events")
 
     def __str__(self):
-        return f"L'évènement {self.id}: {self.starting_event_date} à {self.ending_envent_date}, Localisation: {self.location}"
+        support_name = self.support.complete_name if self.support else "Non affecté"
+        return (
+            f"ID de l'évènement: {self.id}\n"
+            + f"Affecté à: {support_name}\n"
+            + f"Date de début: {self.starting_event_date}\n"
+            + f"Date de fin: {self.ending_event_date}\n"
+            + f"Localisation: {self.location}\n"
+            + f"Nombre de participants: {self.attendees}\n"
+            + f"Notes: {self.notes}\n\n"
+        )

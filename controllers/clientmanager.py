@@ -66,10 +66,7 @@ class ClientManager:
         if client_to_delete.user_id != self.user_id:
             self.view.display_client_is_not_under_responsibility()
             return None
-        confirmation = self.view.delete_confirmation(client_to_delete.email)
-        if not confirmation:
-            return None
-        deletion = self.model.delete(client_to_delete.id)
+        deletion = self.model.delete(client_to_delete)
         if deletion:
             self.view.display_client_is_delete()
         else:

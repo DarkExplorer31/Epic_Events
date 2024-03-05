@@ -1,5 +1,6 @@
 """Event model"""
 
+from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 
 from .db_models import Event
@@ -20,6 +21,8 @@ class EventModel:
         support_id=None,
     ):
         try:
+            starting_event_date = datetime.strptime(starting_event_date, "%d/%m/%Y")
+            ending_event_date = datetime.strptime(ending_event_date, "%d/%m/%Y")
             new_event = Event(
                 contract_id=contract_id,
                 support_id=support_id,
@@ -55,11 +58,19 @@ class EventModel:
             )
             if not event_in_db:
                 return False
+            if isinstance(event_in_db.starting_event_date, str):
+                event_in_db.starting_event_date = datetime.strptime(
+                    event_in_db.starting_event_date, "%d/%m/%Y"
+                )
+            elif isinstance(event_in_db.ending_event_date, str):
+                event_in_db.ending_event_date = datetime.strptime(
+                    event_in_db.ending_event_date, "%d/%m/%Y"
+                )
             event_in_db.contact_id = event_to_update.contract_id
+            event_in_db.support_id = event_to_update.support_id
             event_in_db.starting_event_date = event_to_update.starting_event_date
             event_in_db.ending_event_date = event_to_update.ending_event_date
-            event_in_db.support_contact_name = event_to_update.support_contact_name
-            event_in_db.localisation = event_to_update.localisation
+            event_in_db.location = event_to_update.location
             event_in_db.attendees = event_to_update.attendees
             event_in_db.notes = event_to_update.notes
             self.session.commit()

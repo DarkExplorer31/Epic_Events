@@ -22,7 +22,11 @@ class ClientView:
         display_green_message("Le client a été créé.")
 
     def display_not_created(self):
-        display_red_message("Le client n'a pas été créé.")
+        display_red_message(
+            "Le client n'a pas été créé."
+            + " Veuillez vérifier que l'email "
+            + "ou le numéro de téléphone sont bien uniques."
+        )
 
     def display_unfound_client(self):
         display_red_message("Le client n'a pas été trouvé.")
@@ -48,7 +52,11 @@ class ClientView:
         display_green_message("Le client a été mis à jour.")
 
     def display_client_is_not_update(self):
-        display_red_message("Le client n'a pas été mis à jour.")
+        display_red_message(
+            "Le client n'a pas été mis à jour."
+            + " Veuillez vérifier que l'email "
+            + "ou le numéro de téléphone sont bien uniques."
+        )
 
     def display_client_is_delete(self):
         display_green_message("Le client a été supprimé.")
@@ -130,7 +138,7 @@ class ClientView:
             client.phone_number = phone_number
             display_green_message("Le numéro de téléphone à été changer.")
         company_name = self.menu.information_menu(
-            asking_sentence="Veuillez remplir le nomde la compagnie"
+            asking_sentence="Veuillez remplir le nom de la compagnie"
         )
         if not company_name:
             display_red_message("Le numéro de téléphone n'a pas été changer")
@@ -146,5 +154,5 @@ class ClientView:
         if user_role == "Sales":
             choice = self.menu.crud_menu("client")
         else:
-            choice = self.menu.no_permission_menu()
+            choice = self.menu.no_permission_menu("client")
         return choice

@@ -55,11 +55,10 @@ class ClientModel:
 
     def delete(self, client_to_delete):
         client_in_db = (
-            self.session.query(Client).filter_by(id=client_to_delete.id).first()
+            self.session.query(Client).filter_by(email=client_to_delete.email).first()
         )
-        if client_in_db:
-            self.session.delete(client_to_delete)
-            self.session.commit()
-            return True
-        else:
+        if not client_in_db:
             return False
+        self.session.delete(client_to_delete)
+        self.session.commit()
+        return True

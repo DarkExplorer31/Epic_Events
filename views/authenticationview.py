@@ -43,7 +43,7 @@ class AuthenticationView:
         )
         if not login:
             return None
-        password = getpass.getpass("Veuillez entrer votre mot de passe:\n>")
+        password = getpass.getpass("Veuillez entrer votre mot de passe:\n> ")
         if not password:
             return None
         return {"login": login, "password": password}

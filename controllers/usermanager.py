@@ -16,10 +16,6 @@ class UserManager:
         all_users = self.model.get_all()
         self.view.display_users(all_users)
 
-    def get_all_support(self):
-        all_support_users = self.model.get_all_support_user()
-        self.view.display_users(all_support_users)
-
     # Create method
     def create_new_user(self):
         data = self.view.get_new_user_information()
@@ -62,9 +58,6 @@ class UserManager:
     def delete_user(self):
         user_to_delete = self.select_user()
         if not user_to_delete:
-            return None
-        confirmation = self.view.delete_confirmation(user_to_delete.email)
-        if not confirmation:
             return None
         deletion = self.model.delete(user_to_delete.id)
         if deletion:

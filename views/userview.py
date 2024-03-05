@@ -35,14 +35,12 @@ class UserView:
 
     def display_selected_user(self, user):
         print(
-            "\n"
-            + f"Vous avez sélectionné l'utilisateur : {user.email}."
+            +f"Vous avez sélectionné l'utilisateur : {user.email}."
             + "\nVous ne pourrez changer que le rôle, le nom complet"
-            + " ou le numéro de téléphone."
-            + f" Actuellement, son rôle est : {user.role}."
-            + "\nLe numéro de téléphone est : {user.phone_number}."
-            + "\nEt le nom complet : {user.complete_name}."
-            + "\n"
+            + " ou le numéro de téléphone.\n"
+            + f" Actuellement, son rôle est : {user.role}.\n"
+            + f"Le numéro de téléphone est : {user.phone_number}.\n"
+            + f"Et le nom complet : {user.complete_name}.\n\n"
         )
 
     def display_user_is_update(self):
@@ -122,7 +120,7 @@ class UserView:
         if not role:
             display_red_message("Le role n'a pas été changer")
         else:
-            user.role = role
+            user.role = role.upper()
             display_green_message("Le role à été changer.")
         complete_name = self.menu.information_menu(
             asking_sentence="Veuillez remplir son nom complet"
@@ -141,9 +139,6 @@ class UserView:
             user.phone_number = phone_number
             display_green_message("Le numéro de téléphone à été changer.")
         return user
-
-    def delete_confirmation(self, user_email):
-        return self.menu.confirm_choice(user_email)
 
     def choice_menu(self):
         choice = self.menu.crud_menu("utilisateur")
