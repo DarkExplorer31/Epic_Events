@@ -1,5 +1,7 @@
 """Define main"""
 
+import sentry_sdk
+
 from db import DataBase
 from controllers.authenticationmanager import AuthenticationController
 from controllers.usermanager import UserManager
@@ -24,6 +26,11 @@ def call_controller_by_choice(choice, session, user):
 
 
 def main():
+    sentry_sdk.init(
+        dsn="https://2ba76b5ff4afd8401b4cf01d78af3a1e@o4506859901419520.ingest.us.sentry.io/4506859929731072",
+        traces_sample_rate=0.1,
+        profiles_sample_rate=0.1,
+    )
     db_instance = DataBase()
     db_session = db_instance.create_db_session()
     if db_session:
