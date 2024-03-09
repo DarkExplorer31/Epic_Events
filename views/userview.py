@@ -35,7 +35,7 @@ class UserView:
 
     def display_selected_user(self, user):
         print(
-            +f"Vous avez sélectionné l'utilisateur : {user.email}."
+            f"Vous avez sélectionné l'utilisateur : {user.email}."
             + "\nVous ne pourrez changer que le rôle, le nom complet"
             + " ou le numéro de téléphone.\n"
             + f" Actuellement, son rôle est : {user.role}.\n"

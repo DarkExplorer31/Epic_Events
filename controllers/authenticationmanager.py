@@ -23,10 +23,7 @@ class AuthenticationController:
         # In database, True = 1 and False = 0
         if user_authenticate.first_using_password is True:
             new_password = self.view.add_new_password(user_authenticate.password)
-            update = self.user.change_password(user_authenticate.id, new_password)
-            if not update:
-                self.view.display_unchange_password()
-                return None
+            self.user.change_password(user_authenticate.id, new_password)
             self.view.display_password_changed()
             return user_authenticate
         self.view.display_acces_autorise()

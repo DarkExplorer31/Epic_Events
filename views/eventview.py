@@ -7,6 +7,7 @@ from utils import Menu, display_green_message, display_red_message
 
 class EventView:
     DATE_TYPE = r"^[0-3][0-9]/[0-1][0-9]/[0-9]{4}$"
+    EMAIL_TYPE = "@"
 
     def __init__(self):
         self.menu = Menu()

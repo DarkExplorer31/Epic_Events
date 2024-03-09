@@ -25,13 +25,6 @@ class AuthenticationView:
     def display_password_changed(self):
         display_green_message("Mot de passe changé.\nAccès autorisé")
 
-    def display_unchange_password(self):
-        display_red_message(
-            "Une erreur s'est produite.\n"
-            + " Vos modifications n'ont pas "
-            + "été prises en compte."
-        )
-
     def display_hello_user(self, user):
         display_green_message(f"Bonjour, {user.complete_name}")
 

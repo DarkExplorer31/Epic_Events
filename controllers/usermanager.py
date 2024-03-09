@@ -59,7 +59,7 @@ class UserManager:
         user_to_delete = self.select_user()
         if not user_to_delete:
             return None
-        deletion = self.model.delete(user_to_delete.id)
+        deletion = self.model.delete(user_to_delete.email)
         if deletion:
             self.view.display_user_is_delete()
         else:
