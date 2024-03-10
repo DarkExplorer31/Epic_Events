@@ -1,11 +1,14 @@
 # Epic_Events
+Build with:
+
 ![built-with-MVC-Architecture](/badges/mvc-architecture.svg)
 ![built-with-SQLAlchemy](/badges/sql-alchemy.svg)
+
 A CRM Python project. 
 
 ## Table of Contents
 - [Installation](#installation)
-- [Database-plan] (#Database-plan)
+- [Database-plan](#Database-plan)
 - [Contributing](#contributing)
 - [License](#license)
 
