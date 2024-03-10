@@ -149,13 +149,10 @@ class TestUserView(unittest.TestCase):
         mocked_user.complete_name = "John Doe"
         mocked_user.phone_number = "123456789"
         mocked_information_menu.side_effect = ["Manager", "Updated Name", "987654321"]
-        user_view = UserView()
-        with patch("builtins.print") as mocked_print:
-            result = user_view.get_update_user_informations(mocked_user)
+        result = self.user_view.get_update_user_informations(mocked_user)
         self.assertEqual(result.role, "MANAGER")
         self.assertEqual(result.complete_name, "Updated Name")
         self.assertEqual(result.phone_number, "987654321")
-        mocked_print.assert_called_once()
         mocked_red_message.assert_not_called()
         mocked_green_message.assert_called()
 

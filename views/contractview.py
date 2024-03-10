@@ -114,7 +114,7 @@ class ContractView:
         elif status == "Payé":
             status = StatusEnum.PAID
         else:
-            display_red_message("Le role n'existe pas.")
+            return None
         return status
 
     def get_new_contract_information(self):
@@ -225,9 +225,6 @@ class ContractView:
             contract.status = StatusEnum.PAID
             contract.balance = 0.0
         return contract
-
-    def delete_confirmation(self, contract_id):
-        return self.menu.confirm_choice(contract_id)
 
     def choice_menu(self, user_role):
         if user_role == "Manager":

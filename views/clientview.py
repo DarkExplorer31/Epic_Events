@@ -147,9 +147,6 @@ class ClientView:
             display_green_message("Le nom de l'entreprise à été changer.")
         return client
 
-    def delete_confirmation(self, client_email):
-        return self.menu.confirm_choice(client_email)
-
     def choice_menu(self, user_role):
         if user_role == "Sales":
             choice = self.menu.crud_menu("client")

@@ -26,21 +26,20 @@ class TestUserModel(unittest.TestCase):
         self.session_mock.add.assert_called_once()
         self.session_mock.commit.assert_called_once()
 
-        def test_create_integrity_error(self):
-            self.session_mock.add.side_effect = IntegrityError(
-                "Integrity Error", params=None, orig=None
-            )
-
-            result = self.user_model.create(
-                role="ADMIN",
-                complete_name="John Doe",
-                email="john@example.com",
-                phone_number="123456789",
-                password="password",
-            )
-            self.assertFalse(result)
-            self.session_mock.add.assert_called_once()
-            self.session_mock.rollback.assert_called_once()
+    def test_create_user_integrity_error(self):
+        self.session_mock.add.side_effect = IntegrityError(
+            "Integrity Error", params=None, orig=None
+        )
+        result = self.user_model.create(
+            role="ADMIN",
+            complete_name="John Doe",
+            email="john@example.com",
+            phone_number="123456789",
+            password="password",
+        )
+        self.assertFalse(result)
+        self.session_mock.add.assert_called_once()
+        self.session_mock.rollback.assert_called_once()
 
     def test_get_all_user(self):
         result = self.user_model.get_all()

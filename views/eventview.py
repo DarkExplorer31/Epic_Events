@@ -6,7 +6,7 @@ from utils import Menu, display_green_message, display_red_message
 
 
 class EventView:
-    DATE_TYPE = r"^[0-3][0-9]/[0-1][0-9]/[0-9]{4}$"
+    DATE_TYPE = r"^[0-9]{2}/[0-9]{2}/[0-9]{4}$"
     EMAIL_TYPE = "@"
 
     def __init__(self):
@@ -186,14 +186,17 @@ class EventView:
         )
         if not attendees or attendees == event.attendees:
             display_red_message("Pas de modification.")
+            attendees = event.attendees
         try:
             attendees = int(attendees)
         except ValueError:
-            display_red_message("Ce champs attend un nombre")
+            display_red_message("Ce champs attend un nombre, il reste inchangé.")
+            attendees = event.attendees
         if attendees <= 0:
             display_red_message(
                 "Le nombre de participant ne peut pas être vide ou négatif."
             )
+            attendees = event.attendees
         else:
             event.attendees = attendees
         notes = self.menu.information_menu(

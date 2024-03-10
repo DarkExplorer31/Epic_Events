@@ -32,7 +32,7 @@ class EventManager:
         else:
             all_events = self.get_all_events()
         if not all_events:
-            self.display_empty_list()
+            self.view.display_empty_list()
             return None
         self.view.display_objects(all_events)
         return all_events
