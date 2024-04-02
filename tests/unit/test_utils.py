@@ -67,12 +67,14 @@ class TestMenu(unittest.TestCase):
         self.assertEqual(choice, "2")
 
     @patch("builtins.input", side_effect=["invalid", "option 2"])
-    def test_menu_not_conform_message(self, mock_input):
+    @patch("utils.display_red_message")
+    def test_menu_not_conform_message(self, mock_display_red_message, mock_input):
         choice = self.menu.information_menu(
             "Choose an option:",
             value_in_sentence="option",
             not_conform_message="Value does not contain 'option'",
         )
+        mock_display_red_message.assert_called_once()
         self.assertEqual(choice, "option 2")
 
     @patch("utils.Menu.global_menu", return_value="t")

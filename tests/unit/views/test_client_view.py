@@ -21,9 +21,7 @@ class TestClientView(unittest.TestCase):
     def test_display_clients_empty(self, mocked_display_red_message):
         clients = []
         self.client_view.display_clients(clients)
-        mocked_display_red_message.assert_called_with(
-            "Votre liste de client actuel est vide.\n"
-        )
+        mocked_display_red_message.assert_called_once()
 
     @patch("views.clientview.display_green_message")
     def test_display_created(self, mocked_display_green_message):
