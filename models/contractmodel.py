@@ -3,7 +3,7 @@
 import datetime
 from sqlalchemy.exc import IntegrityError
 
-from .db_models import Contract, Client
+from .db_models import Contract, Client, StatusEnum
 
 
 class ContractModel:
@@ -30,6 +30,14 @@ class ContractModel:
         return self.session.query(Contract).all()
 
     def get_all_by_status(self, status):
+        if status == "Pas payé":
+            status = StatusEnum.UNPAID
+        elif status == "Payé":
+            status = StatusEnum.PAID
+        elif status == "Non signé":
+            status = StatusEnum.UNSIGNED
+        else:
+            status = None
         return self.session.query(Contract).filter(Contract.status == status).all()
 
     def get_all_by_user_responsibility(self, user_id):

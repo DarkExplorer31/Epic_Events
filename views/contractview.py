@@ -107,15 +107,10 @@ class ContractView:
         )
         if not status:
             return None
-        elif status == "Non Payé":
-            status = StatusEnum.UNPAID
-        elif status == "Non signé":
-            status = StatusEnum.UNSIGNED
-        elif status == "Payé":
-            status = StatusEnum.PAID
+        elif status in ["Pas payé", "Non signé", "Payé"]:
+            return status
         else:
             return None
-        return status
 
     def get_new_contract_information(self):
         print("Bienvenue dans la création d'un nouveau contrat\n")
@@ -190,7 +185,7 @@ class ContractView:
             return None
         elif status == contract.status:
             display_red_message("Le status n'a pas changé")
-        elif status == "Non payé":
+        elif status == "Pas payé":
             contract.status = StatusEnum.UNPAID
             balance = self.menu.information_menu(
                 asking_sentence="Veuillez remplir le coût déjà payé par le client"
